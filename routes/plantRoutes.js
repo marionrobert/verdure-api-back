@@ -41,6 +41,7 @@ module.exports = (app,db)=>{
     //route permettant d'enregistrer une plante (REMETTRE ADMINAUTH)
     app.post("/api/v1/plants/save", adminAuth, async(req, res, next)=>{
       let plant = await plantModel.saveOnePlant(req)
+      // console.log(plant)
       if(plant.code){
         res.json({status: 500, msg: "Une erreur est survenue: la création d'une nouvelle plante n'a pas pu aboutir."})
       } else {

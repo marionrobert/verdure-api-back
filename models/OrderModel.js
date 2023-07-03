@@ -19,9 +19,9 @@ class OrderModel {
     }
 
     //sauvegarde d'un orderDetail
-    static saveOneOrderDetail(order_id, plant_id){
+    static saveOneOrderDetail(order_id, plant){
       let sql = "INSERT INTO orderdetails (order_id, plant_id, quantity, total) VALUES(?, ?, ?, ?)"
-      return db.query(sql, [order_id, plant_id, quantity, total])
+      return db.query(sql, [order_id, plant.id, plant.quantity, plant.total])
       .then((res)=>{
         return res
       })
