@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const { db } = require('../config-offline')
 const saltRounds = 10
 
 module.exports = (_db)=>{
@@ -9,9 +10,20 @@ module.exports = (_db)=>{
 class UserModel {
     //sauvegarde d'un membre
     static saveOneUser(req){
-        let sql = "INSERT INTO (firstName, lastName, email, password, role, address, zip, city, phone, creationTimestamp, connexionTimestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-
-
+      let sql = "INSERT INTO (firstName, lastName, email, password, role, address, zip, city, phone, creationTimestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      return bcrypt.khash(req.body.password, saltRounds)
+      .then((hashPassword)=>{
+        return db.query(sql, [req.body.firstName, req.body.lastName, req.body.email, hashPassword, "user", req.body.address, req.body.zip, req.body.city, req.body.phone, new Date()])
+        .then((res)=>{
+          return res
+        })
+        .catch((err)=>{
+          return err
+        })
+      })
+      .catch((err)=>{
+        return err
+      })
     }
 
     //récupération d'un utilisateur en fonction de son mail
@@ -38,7 +50,8 @@ class UserModel {
 
     //modification d'un utilisateur
     static updateUser(req, userId){
-
+      let sql = "UPDATE users SET firstName, lastName, address, zip, city, phone, WHERE id = ?"
+      return db.query(sql, [req.body.firstName, req.body.lastName, req.body.address, req.body.zip, req.body.city, req.body.phone, userId])
 
     }
 
