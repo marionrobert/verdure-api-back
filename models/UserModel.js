@@ -9,11 +9,11 @@ module.exports = (_db)=>{
 class UserModel {
     //sauvegarde d'un membre
     static saveOneUser(req){
-        
-        
-        
+        let sql = "INSERT INTO (firstName, lastName, email, password, role, address, zip, city, phone, creationTimestamp, connexionTimestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+
+
     }
-    
+
     //récupération d'un utilisateur en fonction de son mail
     static getUserByEmail(email){
         return db.query("SELECT * FROM users WHERE email = ?", [email])
@@ -24,7 +24,7 @@ class UserModel {
             return err
         })
     }
-    
+
     //récupération d'un utilisateur par son id
     static getOneUser(id){
         return db.query("SELECT * FROM users WHERE id = ?", [id])
@@ -35,13 +35,13 @@ class UserModel {
             return err
         })
     }
-    
+
     //modification d'un utilisateur
     static updateUser(req, userId){
-        
-        
+
+
     }
-    
+
     static updateConnexion(id){
         return db.query("UPDATE users SET connexionTimestamp = NOW() WHERE id = ?", [id])
         .then((res)=>{
@@ -50,6 +50,6 @@ class UserModel {
         .catch((err)=>{
             return err
         })
-        
+
     }
 }

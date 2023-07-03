@@ -7,10 +7,10 @@ const withAuth = require('../withAuth')
 
 module.exports = (app, db)=>{
     const userModel = require('../models/UserModel')(db)
-    
+
     //route d'enregistrement d'un utilisateur
-    
-    
+    // app.post("/api/v1/user/signin", async(req,res, next))
+
      //route de connexion d'un utilisateur (c'est ici qu'on va créer le token et l'envoyer vers le front)
     app.post('/api/v1/user/login', async (req, res, next)=>{
         if(req.body.email === ""){
@@ -46,11 +46,11 @@ module.exports = (app, db)=>{
                 }
             }
         }
-        
+
     })
-    
+
     //route de modification des utilisateurs
-    
-    
-    
+
+
+
 }

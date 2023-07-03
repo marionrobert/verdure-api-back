@@ -37,7 +37,7 @@ const password = process.env.PASSWORD || config.db.password
 //on importe nos routes
 const userRoutes = require('./routes/userRoutes')
 const authRoutes = require('./routes/authRoutes')
-const beerRoutes = require('./routes/beerRoutes')
+const plantRoutes = require('./routes/plantRoutes')
 const orderRoutes = require('./routes/orderRoutes')
 
 //connexion à la bdd
@@ -48,23 +48,25 @@ mysql.createConnection({
     password: password
     //port: port (pour mamp MAC)
 }).then((db)=>{
-    console.log('connecté bdd cousin!')
+    console.log('Connexion avec BDD ok')
     setInterval(async ()=>{
         let res = await db.query('SELECT 1')
     }, 10000)
-    
+
     app.get('/', async (req, res, next)=>{
-        res.json({status: 200, msg: "Welcome to your API BEER FOR YOU my friend!"})
+        res.json({status: 200, msg: "Welcome to Verdure API-BACK!"})
     })
-    
+
     //appel de nos routes
     userRoutes(app, db)
     authRoutes(app, db)
+    plantRoutes(app, db)
+    orderRoutes(app, db)
 })
-.catch(err=>console.log("Echec connexion bro! ", err))
+.catch(err=>console.log("Echec connexion! ", err))
 
 const PORT = process.env.PORT || 9000
 
 app.listen(PORT, ()=>{
-    console.log(`listening port ${PORT}, all is ok bitch!`)
+    console.log(`listening port ${PORT}, everything is ok!`)
 })
