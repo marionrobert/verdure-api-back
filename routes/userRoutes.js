@@ -9,7 +9,14 @@ module.exports = (app, db)=>{
     const userModel = require('../models/UserModel')(db)
 
     //route d'enregistrement d'un utilisateur
-    // app.post("/api/v1/user/signin", async(req,res, next))
+    app.post("/api/v1/user/register", async(req,res, next)=>{
+      let user = await userModel.saveOneUser(req)
+      if (user.code){
+        res.json({status: 500, msg: "Erreur dans la création d'un nouvel utilisateur."})
+      } else {
+        res.json({status: 200, msg: "Le compte utilisateur a bien été créé."})
+      }
+    })
 
      //route de connexion d'un utilisateur (c'est ici qu'on va créer le token et l'envoyer vers le front)
     app.post('/api/v1/user/login', async (req, res, next)=>{
@@ -50,7 +57,18 @@ module.exports = (app, db)=>{
     })
 
     //route de modification des utilisateurs
-
-
+    app.put("/api/v1/user/update/:id", withAuth, async(req, res, next)=>{
+      let user = await userModel.updateUser(req, req.params.id)
+      if (user.code){
+        res.json({status: 500, msg: "Les informations de l'utilisateur n'ont pas été mises à jour."})
+      } else {
+        if(user.changedRows === 0) {
+          res.json({status:404, msg: "Les informations envoyées ne sont pas différentes de celles déjà connues."})
+        } else {
+          // if (user.)
+          res.json({status: 200, msg: "Les informations de l'utilisateur ont bien été mises à jour."})
+        }
+      }
+    })
 
 }
