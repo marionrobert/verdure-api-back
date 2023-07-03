@@ -1,9 +1,9 @@
 module.exports = {
     db: {
         host: "db.3wa.io",
-        database: "monesma_beer4you",
-        user: "monesma",
-        password: "c0b7990cb05833d15b0d5001963aa61a"
-        //port: 8889
+        database: "marionrobert_verdure",
+        user: "marionrobert",
+        password: "1a666de5d2caaa86fce86f15cc4018f4"
+        //port: 8889 - pour MAC
     }
 }
