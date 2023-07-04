@@ -77,7 +77,7 @@ module.exports = (app,db)=>{
       if (plant.code){
         res.json({status: 500, msg: "La plante n'a pas pu être mise à jour."})
       } else {
-        res.json({status: 200, msg: "La plante a bien été mise à jour."})
+        res.json({status: 200, msg: "La plante a bien été mise à jour.", })
       }
     })
 
