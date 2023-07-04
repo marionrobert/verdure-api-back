@@ -10,11 +10,20 @@ module.exports = (app, db)=>{
 
     //route d'enregistrement d'un utilisateur
     app.post("/api/v1/user/register", async(req,res, next)=>{
-      let user = await userModel.saveOneUser(req)
-      if (user.code){
-        res.json({status: 500, msg: "Erreur dans la création d'un nouvel utilisateur."})
+      let check = await userModel.getUserByEmail(req.body.email)
+      if (check.code){
+        res.json({status: 500, msg: "La vérification de l'existence du mail n'a pas pu aboutir"})
       } else {
-        res.json({status: 200, msg: "Le compte utilisateur a bien été créé."})
+        if (check.length > 0) {
+          res.json({status: 401, msg: "Un compte existe déjà avec cette adresse email"})
+        } else {
+          let user = await userModel.saveOneUser(req)
+          if (user.code){
+            res.json({status: 500, msg: "Erreur dans la création d'un nouvel utilisateur."})
+          } else {
+            res.json({status: 200, msg: "Le compte utilisateur a bien été créé."})
+          }
+        }
       }
     })
 
@@ -58,15 +67,20 @@ module.exports = (app, db)=>{
 
     //route de modification des utilisateurs
     app.put("/api/v1/user/update/:id", withAuth, async(req, res, next)=>{
-      let user = await userModel.updateUser(req, req.params.id)
-      if (user.code){
-        res.json({status: 500, msg: "Les informations de l'utilisateur n'ont pas été mises à jour."})
+      if (isNaN(req.params.id)){
+        res.json({status: 500, msg: "L'id renseigné n'est pas un nombre"})
       } else {
-        if(user.changedRows === 0) {
-          res.json({status:404, msg: "Les informations envoyées ne sont pas différentes de celles déjà connues."})
+        let user = await userModel.updateUser(req, req.params.id)
+        if (user.code){
+          res.json({status: 500, msg: "Les informations de l'utilisateur n'ont pas été mises à jour."})
         } else {
-          // if (user.)
-          res.json({status: 200, msg: "Les informations de l'utilisateur ont bien été mises à jour."})
+          //mon profil est modifié je renvoie les infos du profil mises à jour vers le front (pour que redux mette à jour immédiatement les infos d'utilisateur connecté)
+          let newUser = await userModel.getOneUser(req.params.id)
+          if(newUser.code){
+              res.json({status: 500, msg: "Un problème est survenu.", err: newUser})
+          } else {
+              res.json({status: 200, result: user, newUser: newUser[0], msg: "Les informations de l'utilisateur ont bien été mises à jour." })
+          }
         }
       }
     })

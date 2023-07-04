@@ -1,11 +1,11 @@
 const withAuth = require('../withAuth')
 const jwt = require('jsonwebtoken')
-const secret = 'pitichat'
+const secret = 'fsjs26'
 
 //routes permettant la gestion de la connexion par token (avec le front qui jouera aussi avec redux)
 module.exports = (app, db)=>{
     const userModel = require('../models/UserModel')(db)
-    
+
     //route de récupération des infos de l'utilisateur par son token (permet la reconnexion automatique du front)
     app.get('/api/v1/user/checkToken', withAuth, async (req, res, next) => {
         let user = await userModel.getOneUser(req.id)
