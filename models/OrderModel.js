@@ -7,8 +7,6 @@ class OrderModel {
     //validation d'une commande
     static saveOneOrder(user_id, totalAmount){
       //le status sera "not payed" par défault
-      // console.log("user id + totalAmount in saveOneOrder ordermodel")
-      // console.log(user_id, totalAmount)
       let sql = "INSERT INTO orders (user_id, totalAmount, creationTimestamp, status) VALUES(?, ?, ?, ?)"
       return db.query(sql, [user_id, totalAmount, new Date(), "not payed"])
       .then((res)=>{
