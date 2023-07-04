@@ -17,7 +17,7 @@ module.exports = (app,db)=>{
 
 
     //route permettant de récuperer une seule plante
-    app.get("/api/v1/plant/:id", async(req, res, next)=>{
+    app.get("/api/v1/plants/:id", async(req, res, next)=>{
       if (isNaN(req.params.id)){
         res.json({status: 500, msg: "L'id renseigné n'est pas un nombre"})
       } else {
