@@ -67,16 +67,20 @@ module.exports = (app, db)=>{
 
     //route de modification des utilisateurs
     app.put("/api/v1/user/update/:id", withAuth, async(req, res, next)=>{
-      let user = await userModel.updateUser(req, req.params.id)
-      if (user.code){
-        res.json({status: 500, msg: "Les informations de l'utilisateur n'ont pas été mises à jour."})
+      if (isNaN(req.params.id)){
+        res.json({status: 500, msg: "L'id renseigné n'est pas un nombre"})
       } else {
-        //mon profil est modifié je renvoie les infos du profil mises à jour vers le front (pour que redux mette à jour immédiatement les infos d'utilisateur connecté)
-        let newUser = await userModel.getOneUser(req.params.id)
-        if(newUser.code){
-            res.json({status: 500, msg: "Un problème est survenu.", err: newUser})
+        let user = await userModel.updateUser(req, req.params.id)
+        if (user.code){
+          res.json({status: 500, msg: "Les informations de l'utilisateur n'ont pas été mises à jour."})
         } else {
-            res.json({status: 200, result: user, newUser: newUser[0], msg: "Les informations de l'utilisateur ont bien été mises à jour." })
+          //mon profil est modifié je renvoie les infos du profil mises à jour vers le front (pour que redux mette à jour immédiatement les infos d'utilisateur connecté)
+          let newUser = await userModel.getOneUser(req.params.id)
+          if(newUser.code){
+              res.json({status: 500, msg: "Un problème est survenu.", err: newUser})
+          } else {
+              res.json({status: 200, result: user, newUser: newUser[0], msg: "Les informations de l'utilisateur ont bien été mises à jour." })
+          }
         }
       }
     })

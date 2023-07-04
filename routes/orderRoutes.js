@@ -116,35 +116,39 @@ module.exports = (app, db) => {
 
     //route de récupération d'une commande
     app.get("/api/v1/order/:id", withAuth, async(req, res, next)=>{
-      //on récupère la commande
-      let order = await orderModel.getOneOrder(req.params.id)
-      if (order.code){
-        res.json({status: 500, msg: "La requête de récupération de la commande n'a pas pu aboutir", err: order})
+      if (isNaN(req.params.id)){
+        res.json({status: 500, msg: "L'id renseigné n'est pas un nombre"})
       } else {
-        // on récupère les infos de l'utilisateur qui a commandé
-        let user = await userModel.getOneUser(order[0].user_id)
-        if (user.code){
-          res.json({status: 500, msg: "La requête de récupération des informations d'utilisateur n'a pas pu aboutir", err: user})
+        //on récupère la commande
+        let order = await orderModel.getOneOrder(req.params.id)
+        if (order.code){
+          res.json({status: 500, msg: "La requête de récupération de la commande n'a pas pu aboutir", err: order})
         } else {
-          // on crée un objet de user sans infos sensibles (firstName, lastName, address, zip, city, phone)
-          let dataUser = {
-            "firstName": user[0].firstName,
-            "lastName": user[0].lastName,
-            "address": user[0].address,
-            "zip": user[0].zip,
-            "city": user[0].city,
-            "phone": user[0].phone
-          }
-
-          //on récupère les détails de la commande
-          let orderDetails = await orderModel.getAllDetails(req.params.id)
-          console.log("orderDetails")
-          console.log(orderDetails)
-          if (orderDetails.code){
-            res.json({status: 500, msg: "La requête de récupération des détails de la commande n'a pas pu aboutir", err: orderDetails})
+          // on récupère les infos de l'utilisateur qui a commandé
+          let user = await userModel.getOneUser(order[0].user_id)
+          if (user.code){
+            res.json({status: 500, msg: "La requête de récupération des informations d'utilisateur n'a pas pu aboutir", err: user})
           } else {
-            //on retourne le json avec les infos de la commande, de l'utilisateur et des détails de la commande
-            res.json({status: 200, order: order, dataUser: dataUser, orderDetails: orderDetails})
+            // on crée un objet de user sans infos sensibles (firstName, lastName, address, zip, city, phone)
+            let dataUser = {
+              "firstName": user[0].firstName,
+              "lastName": user[0].lastName,
+              "address": user[0].address,
+              "zip": user[0].zip,
+              "city": user[0].city,
+              "phone": user[0].phone
+            }
+
+            //on récupère les détails de la commande
+            let orderDetails = await orderModel.getAllDetails(req.params.id)
+            console.log("orderDetails")
+            console.log(orderDetails)
+            if (orderDetails.code){
+              res.json({status: 500, msg: "La requête de récupération des détails de la commande n'a pas pu aboutir", err: orderDetails})
+            } else {
+              //on retourne le json avec les infos de la commande, de l'utilisateur et des détails de la commande
+              res.json({status: 200, order: order, dataUser: dataUser, orderDetails: orderDetails})
+            }
           }
         }
       }
