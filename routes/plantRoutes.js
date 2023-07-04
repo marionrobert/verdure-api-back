@@ -38,7 +38,7 @@ module.exports = (app,db)=>{
 
 
     //route permettant d'enregistrer une plante (REMETTRE ADMINAUTH)
-    app.post("/api/v1/plants/save", adminAuth, async(req, res, next)=>{
+    app.post("/api/v1/plant/save", adminAuth, async(req, res, next)=>{
       let plant = await plantModel.saveOnePlant(req)
       // console.log(plant)
       if(plant.code){
@@ -50,7 +50,7 @@ module.exports = (app,db)=>{
 
 
     //route d'ajout d'une image dans l'api (stock une image et retourne au front le nom de l'image stocké)
-    app.post('/api/v1/plants/pict', adminAuth, (req, res, next) =>{
+    app.post('/api/v1/plant/pict', adminAuth, (req, res, next) =>{
         //si on a pas envoyé de req.files via le front ou que cet objet ne possède aucune propriété
 		if (!req.files || Object.keys(req.files).length === 0) {
 			//on envoi une réponse d'erreur
@@ -71,7 +71,7 @@ module.exports = (app,db)=>{
 
 
     //route permettant de modifier une plante
-    app.put("/api/v1/plants/update/:id", adminAuth, async(req, res, next)=>{
+    app.put("/api/v1/plant/update/:id", adminAuth, async(req, res, next)=>{
       if (isNaN(req.params.id)){
         res.json({status: 500, msg: "L'ide renseigné n'est pas un nombre"})
       } else {
@@ -86,7 +86,7 @@ module.exports = (app,db)=>{
 
 
     //route permettant de supprimer une plante
-    app.delete("/api/v1/plants/delete/:id", adminAuth, async(req, res, next)=>{
+    app.delete("/api/v1/plant/delete/:id", adminAuth, async(req, res, next)=>{
       if (isNaN(req.params.id)){
         res.json({status: 500, msg: "L'ide renseigné n'est pas un nombre"})
       } else {
