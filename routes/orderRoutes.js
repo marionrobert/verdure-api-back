@@ -115,7 +115,7 @@ module.exports = (app, db) => {
 
 
     //route de récupération d'une commande
-    app.get("/api/v1/orders/:id", withAuth, async(req, res, next)=>{
+    app.get("/api/v1/order/:id", withAuth, async(req, res, next)=>{
       if (isNaN(req.params.id)){
         res.json({status: 500, msg: "L'id renseigné n'est pas un nombre"})
       } else {
