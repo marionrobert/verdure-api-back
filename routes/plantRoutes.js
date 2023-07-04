@@ -9,7 +9,7 @@ module.exports = (app,db)=>{
     app.get("/api/v1/plants", async(req, res, next)=>{
       let allPlants = await plantModel.getAllPlants()
       if(allPlants.code){
-        res.json({status: 500, msg: "La requête n'a pas abouti"})
+        res.json({status: 500, msg: "La requête n'a pas abouti", err: allPlants})
       } else {
         res.json({status: 200, results: allPlants})
       }
@@ -25,7 +25,7 @@ module.exports = (app,db)=>{
         // console.log("from plantRoutes")
         // console.log(plant)
         if(plant.code){
-          res.json({status: 500, msg: "La requête n'a pas pu aboutir"})
+          res.json({status: 500, msg: "La requête n'a pas pu aboutir", err: plant})
         } else {
           if (plant.length === 0) {
             res.json({status: 204, msg: "Il n'y a pas de plante dans la base de données correspond à l'id renseigné.", plant: plant})
@@ -37,18 +37,16 @@ module.exports = (app,db)=>{
     })
 
 
-
     //route permettant d'enregistrer une plante (REMETTRE ADMINAUTH)
     app.post("/api/v1/plants/save", adminAuth, async(req, res, next)=>{
       let plant = await plantModel.saveOnePlant(req)
       // console.log(plant)
       if(plant.code){
-        res.json({status: 500, msg: "Une erreur est survenue: la création d'une nouvelle plante n'a pas pu aboutir."})
+        res.json({status: 500, msg: "Une erreur est survenue: la création d'une nouvelle plante n'a pas pu aboutir.", err: plant})
       } else {
         res.json({status: 200, msg: "La nouvelle plante a bien été créée"})
       }
     })
-
 
 
     //route d'ajout d'une image dans l'api (stock une image et retourne au front le nom de l'image stocké)
@@ -60,7 +58,7 @@ module.exports = (app,db)=>{
 	    }
 	    //la fonction mv va envoyer l'image dans le dossier que l'on souhaite.
 	    req.files.image.mv('public/images/'+req.files.image.name, function(err) {
-	    	console.log('ça passe', '/public/images/'+req.files.image.name)
+	    	console.log('ok', '/public/images/'+req.files.image.name)
 	    	//si ça plante dans la callback
 		    if (err) {
 		    //renvoi d'un message d'erreur
@@ -71,24 +69,33 @@ module.exports = (app,db)=>{
         res.json({status: 200, msg: "image bien enregistrée!", url: req.files.image.name})
     })
 
+
     //route permettant de modifier une plante
     app.put("/api/v1/plants/update/:id", adminAuth, async(req, res, next)=>{
-      let plant = await plantModel.updateOnePlant(req, req.params.id)
-      if (plant.code){
-        res.json({status: 500, msg: "La plante n'a pas pu être mise à jour."})
+      if (isNaN(req.params.id)){
+        res.json({status: 500, msg: "L'ide renseigné n'est pas un nombre"})
       } else {
-        res.json({status: 200, msg: "La plante a bien été mise à jour.", })
+        let plant = await plantModel.updateOnePlant(req, req.params.id)
+        if (plant.code){
+          res.json({status: 500, msg: "La plante n'a pas pu être mise à jour.", err: plant})
+        } else {
+          res.json({status: 200, msg: "La plante a bien été mise à jour."})
+        }
       }
     })
 
 
     //route permettant de supprimer une plante
     app.delete("/api/v1/plants/delete/:id", adminAuth, async(req, res, next)=>{
-      let plant = await plantModel.deleteOnePlant(req.params.id)
-      if (plant.code){
-        res.json({status: 500, msg: "La plante n'a pas pu être supprimée."})
+      if (isNaN(req.params.id)){
+        res.json({status: 500, msg: "L'ide renseigné n'est pas un nombre"})
       } else {
-        res.json({status: 200, msg: "La plante a bien été supprimée."})
+        let plant = await plantModel.deleteOnePlant(req.params.id)
+        if (plant.code){
+          res.json({status: 500, msg: "La plante n'a pas pu être supprimée.", err: plant})
+        } else {
+          res.json({status: 200, msg: "La plante a bien été supprimée."})
+        }
       }
     })
 
