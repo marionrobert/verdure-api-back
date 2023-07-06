@@ -54,7 +54,7 @@ module.exports = (app, db)=>{
                         if(connect.code){
                             res.json({status: 500, errr: connect})
                         } else {
-                            res.json({status: 200, token: token, user_id: user[0].id})
+                            res.json({status: 200, token: token, user: user[0]})
                         }
                     }else{
                         res.json({status: 401, error: "Votre mot de passe est incorrect!"})
