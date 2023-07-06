@@ -44,7 +44,7 @@ module.exports = (app,db)=>{
       if(plant.code){
         res.json({status: 500, msg: "Une erreur est survenue: la création d'une nouvelle plante n'a pas pu aboutir.", err: plant})
       } else {
-        res.json({status: 200, msg: "La nouvelle plante a bien été créée"})
+        res.json({status: 200, msg: "La nouvelle plante a bien été créée", plant: plant})
       }
     })
 
