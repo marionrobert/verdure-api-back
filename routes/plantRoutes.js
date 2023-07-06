@@ -73,13 +73,13 @@ module.exports = (app,db)=>{
     //route permettant de modifier une plante
     app.put("/api/v1/plant/update/:id", adminAuth, async(req, res, next)=>{
       if (isNaN(req.params.id)){
-        res.json({status: 500, msg: "L'ide renseigné n'est pas un nombre"})
+        res.json({status: 500, msg: "L'id renseigné n'est pas un nombre"})
       } else {
         let plant = await plantModel.updateOnePlant(req, req.params.id)
         if (plant.code){
           res.json({status: 500, msg: "La plante n'a pas pu être mise à jour.", err: plant})
         } else {
-          res.json({status: 200, msg: "La plante a bien été mise à jour."})
+          res.json({status: 200, msg: "La plante a bien été mise à jour.", plant: plant})
         }
       }
     })
