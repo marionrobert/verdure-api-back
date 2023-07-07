@@ -15,7 +15,7 @@ module.exports = (app, db) => {
         let totalAmount = 0;
         //enregistrement de l'order (fonction)
 
-        let order = await orderModel.saveOneOrder(req.body.userId, totalAmount)
+        let order = await orderModel.saveOneOrder(req.body.user_id, totalAmount)
         if (order.code) {
           res.json({status: 500, msg: "La commande n'a pas pu être créée"})
         } else {
@@ -46,26 +46,25 @@ module.exports = (app, db) => {
                 //on retourne le json de 200 avec l'id de la commande qu'on vient d'enregistrer
                 if (orderUpdated.code){
                   res.json({status: 500, msg: "Le montant total de la commande n'a pas pu être mis à jour"})
+                } else {
+                  res.json({status: 200, order_id: orderId, msg: "La commande a bien été créée."})
                 }
               }
             }
           });
-
-          res.json({status: 200, orderId: orderId, msg: "Le montant total de la commande a été mis à jour."})
-
         }
     })
 
     //route de gestion du paiement (va analyser le bon fonctionnement du paiement)
     app.post('/api/v1/order/payment', withAuth, async (req, res, next)=>{
-      let order = await orderModel.getOneOrder(req.body.orderId)
+      let order = await orderModel.getOneOrder(req.body.order_id)
       //on lance le suivi du paiement de la commande
       //on veut que stripe nous retourne une réponse d'acceptation de paiement ou non, mais tout ce qui est envoi numéro carte c'ets géré en front
       const paymentIntent = await stripe.paymentIntents.create({
         amount: order[0].totalAmount * 100, // stripe est en centimes donc on multiplie par 100
         currency: "eur", //devise du paiement
         metadata: {integration_check: "accept_a_paymentt"}, //on vérifie si le paiement est accepté ou non
-        receipt_email: req.body.email, //on demand eà stripe d'envoyer email de confirmation du payment à l'utilisateur
+        receipt_email: req.body.email, //on demande à stripe d'envoyer email de confirmation du payment à l'utilisateur
       })
       res.json({client_secret: paymentIntent["client_secret"]})
 
@@ -147,7 +146,7 @@ module.exports = (app, db) => {
               res.json({status: 500, msg: "La requête de récupération des détails de la commande n'a pas pu aboutir", err: orderDetails})
             } else {
               //on retourne le json avec les infos de la commande, de l'utilisateur et des détails de la commande
-              res.json({status: 200, order: order, dataUser: dataUser, orderDetails: orderDetails})
+              res.json({status: 200, order: order[0], dataUser: dataUser, orderDetails: orderDetails})
             }
           }
         }

@@ -8,7 +8,7 @@ class OrderModel {
     static saveOneOrder(user_id, totalAmount){
       //le status sera "not payed" par défault
       let sql = "INSERT INTO orders (user_id, totalAmount, creationTimestamp, status) VALUES(?, ?, ?, ?)"
-      return db.query(sql, [user_id, totalAmount, new Date(), "not payed"])
+      return db.query(sql, [user_id, totalAmount, new Date(), "non payé"])
       .then((res)=>{
         return res
       })
