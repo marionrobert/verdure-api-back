@@ -8,7 +8,7 @@ class OrderModel {
     static saveOneOrder(user_id, totalAmount){
       //le status sera "not payed" par défault
       let sql = "INSERT INTO orders (user_id, totalAmount, creationTimestamp, status) VALUES(?, ?, ?, ?)"
-      return db.query(sql, [user_id, totalAmount, new Date(), "non payé"])
+      return db.query(sql, [user_id, totalAmount, new Date(), "not_payed"])
       .then((res)=>{
         return res
       })
@@ -20,9 +20,10 @@ class OrderModel {
 
     //sauvegarde d'un orderDetail
     static saveOneOrderDetail(order_id, plant){
+      console.log("plant in saveOneOrderDetails model -->", plant)
       let total = parseInt(plant.quantityInCart) * plant.safePrice
-      let sql = "INSERT INTO orderdetails (order_id, plant_id, quantity, total) VALUES(?, ?, ?, ?)"
-      return db.query(sql, [order_id, plant.id, plant.quantityInCart, total])
+      let sql = "INSERT INTO orderdetails (order_id, plant_id, quantity, total, photo) VALUES(?, ?, ?, ?, ?)"
+      return db.query(sql, [order_id, plant.id, plant.quantityInCart, total, plant.photo])
       .then((res)=>{
         return res
       })
@@ -57,6 +58,7 @@ class OrderModel {
 
     //modification d'un status de commande
     static updateStatus(order_id, status){
+      // console.log("order_id, status", order_id, status)
       let sql = "UPDATE orders SET status = ? WHERE id = ?"
       return db.query(sql, [status, order_id])
       .then((res)=>{
@@ -87,6 +89,18 @@ class OrderModel {
         return res
       })
       .catch((err)=>{
+        return err
+      })
+    }
+
+    //récupérationlet sql = "SELECET * FROM order" des commandes par utilisateur
+    static getAllOrdersByUser(user_id){
+      let sql = "SELECT * FROM orders WHERE user_id = ?"
+      return db.query(sql, [user_id])
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
         return err
       })
     }

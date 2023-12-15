@@ -1,4 +1,4 @@
-const fs = require('fs')//va nous permettre de supprimer des images locales
+const fs = require('fs') //va nous permettre de supprimer des images locales
 const withAuth = require('../withAuth')
 const adminAuth = require('../adminAuth')
 
