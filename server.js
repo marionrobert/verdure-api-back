@@ -4,7 +4,16 @@ const app = express()
 const mysql = require("promise-mysql")
 const cors = require("cors")
 
+// app.use(cors({
+//   origin: process.env.CORS_ORIGIN || "http://127.0.0.1:5173",
+//   methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
+//   credentials: true,
+//   optionsSuccessStatus: 204
+// }))
+
+
 app.use(cors())
+
 
 const fileUpload = require("express-fileupload")
 
@@ -27,7 +36,6 @@ if(!process.env.HOST){
     config = require("./config")
 }
 
-//connexion à la bdd
 const host = process.env.HOST || config.db.host
 const database = process.env.DATABASE_DB || config.db.database
 const user = process.env.USER_DB || config.db.user

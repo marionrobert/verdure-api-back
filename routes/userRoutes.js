@@ -39,7 +39,7 @@ module.exports = (app, db)=>{
             }else{
                 //si il n'existe pas
                 if(user.length === 0){
-                    res.json({status:404, msg: "Pas d'utilisateur correspondant à ce mail."})
+                    res.json({status:404, msg: "Il n'existe pas d'utilisateur correspondant à cet e-mail."})
                 } else {
                     //la bdd a retourné un objet d'utilisateur pour ce mail
                     //on compare les password avec bcrypt
@@ -52,12 +52,12 @@ module.exports = (app, db)=>{
                         const token = jwt.sign(payload, secret)
                         let connect = await userModel.updateConnexion(user[0].id)
                         if(connect.code){
-                            res.json({status: 500, errr: connect})
+                            res.json({status: 500, msg: connect})
                         } else {
                             res.json({status: 200, token: token, user: user[0]})
                         }
                     }else{
-                        res.json({status: 401, error: "Votre mot de passe est incorrect!"})
+                        res.json({status: 401, msg: "Votre mot de passe est incorrect!"})
                     }
                 }
             }
