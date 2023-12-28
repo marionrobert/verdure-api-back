@@ -22,8 +22,8 @@ class OrderModel {
     static saveOneOrderDetail(order_id, plant){
       console.log("plant in saveOneOrderDetails model -->", plant)
       let total = parseInt(plant.quantityInCart) * plant.safePrice
-      let sql = "INSERT INTO orderdetails (order_id, plant_id, quantity, total, photo) VALUES(?, ?, ?, ?, ?)"
-      return db.query(sql, [order_id, plant.id, plant.quantityInCart, total, plant.photo])
+      let sql = "INSERT INTO orderdetails (order_id, plant_id, quantity, total, photo, name) VALUES(?, ?, ?, ?, ?, ?)"
+      return db.query(sql, [order_id, plant.id, plant.quantityInCart, total, plant.photo, plant.name])
       .then((res)=>{
         return res
       })
