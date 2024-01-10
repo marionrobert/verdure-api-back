@@ -1,8 +1,6 @@
 //on lie la clé privé stripe au back end pour permettre le suivi du paiement
-// const sk_test = process.env.SK_TEST
-// const stripe = require('stripe')(sk_test)
-
-const stripe = require("stripe")("sk_test_51LrM4tJWWAfWqjZRgcGa4uV9T3lvbSTwJmPLLnenlKnRIyhWCWMmFYzX2ZoVipNT5je4IFF43oNvbDNIp6I0WVdh00Q0GfnZjZ")
+const sk_test = process.env.SK_TEST
+const stripe = require('stripe')(sk_test)
 const withAuth = require('../withAuth')
 const adminAuth = require('../adminAuth')
 // const { json } = require('express')
