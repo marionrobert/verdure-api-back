@@ -1,12 +1,10 @@
 //on lie la clé privé stripe au back end pour permettre le suivi du paiement
-// const sk_test = process.env.SK_TEST
-// const stripe = require('stripe')(sk_test)
+const sk_test = process.env.STRIPE_API_KEY_TEST
+const stripe = require('stripe')(sk_test)
 
-const stripe = require("stripe")("sk_test_51LrM4tJWWAfWqjZRgcGa4uV9T3lvbSTwJmPLLnenlKnRIyhWCWMmFYzX2ZoVipNT5je4IFF43oNvbDNIp6I0WVdh00Q0GfnZjZ")
 const withAuth = require('../withAuth')
 const adminAuth = require('../adminAuth')
-// const { json } = require('express')
-// const { JsonWebTokenError } = require('jsonwebtoken')
+
 
 module.exports = (app, db) => {
     const orderModel = require('../models/OrderModel')(db)
