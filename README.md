@@ -34,7 +34,7 @@ Voici la liste des packages et leur version utilisés dans ce projet :
 <br/>
 
 ### Étapes d'installation :
-1. Clonez le dépôt Git : `[git clone https://github.com/marionrobert/verdure-api-back.git`
+1. Clonez le dépôt Git : `git clone https://github.com/marionrobert/verdure-api-back.git`
 2. Assurez-vous d'avoir la stack technologique installée avec les bonnes versions.
 3. Lancer la commande `npm install` pour installer les dépendances.
 4. Créez un fichier **.env** à la racine du projet et ajoutez-y les variables d'environnement suivantes :
