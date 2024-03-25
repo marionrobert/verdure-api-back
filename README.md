@@ -75,7 +75,7 @@ Le projet est organisé en plusieurs dossiers :
 ### Stripe
 Les paiements en ligne sont gérés grâce à la méthode paymentIntents de l'api stripe, dans le fichier **orderRoutes.js** :
 ```
-//on lie la clé privé stripe au back end pour permettre le suivi du paiement
+//on lie la clé privée stripe au backend pour permettre le suivi du paiement
 const sk_test = process.env.STRIPE_API_KEY_TEST
 const stripe = require('stripe')(sk_test)
 const withAuth = require('../withAuth')
