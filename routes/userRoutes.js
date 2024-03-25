@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 //librairie qui va générer un token de connexion
 const jwt = require('jsonwebtoken')
-const secret = 'fsjs26'
+const secret = process.env.SECRET
 const withAuth = require('../withAuth')
 
 module.exports = (app, db)=>{
