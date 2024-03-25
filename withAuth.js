@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken')
-const secret = "fsjs26"
+const secret = process.env.SECRET
 
 const withAuth = (req, res, next) => {
     //on récupère notre token dans le header de la requète HTTP
     const token = req.headers['x-access-token']
-    
+    console.log("token in withAuth -->", token)
+
     //si il ne trouve pas de token
     if(token === undefined){
         res.json({status: 404, msg: "error, token not found."})

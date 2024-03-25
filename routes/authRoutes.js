@@ -1,6 +1,6 @@
 const withAuth = require('../withAuth')
 const jwt = require('jsonwebtoken')
-const secret = 'fsjs26'
+const secret = process.env.SECRET
 
 //routes permettant la gestion de la connexion par token (avec le front qui jouera aussi avec redux)
 module.exports = (app, db)=>{
