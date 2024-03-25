@@ -116,7 +116,7 @@ module.exports = (app,db)=>{
     const plantModel = require('../models/PlantModel')(db)
      [...]
 
-    //route d'ajout d'une image dans l'api (stock une image et retourne au front le nom de l'image stocké)
+    //route d'ajout d'une image dans l'api (enregistre une image et retourne au front le nom de l'image stockée)
     app.post('/api/v1/plant/pict', adminAuth, (req, res, next) =>{
         //si on a pas envoyé de req.files via le front ou que cet objet ne possède aucune propriété
 		if (!req.files || Object.keys(req.files).length === 0) {
