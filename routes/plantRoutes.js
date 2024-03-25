@@ -58,7 +58,7 @@ module.exports = (app,db)=>{
 	    }
 	    //la fonction mv va envoyer l'image dans le dossier que l'on souhaite.
 	    req.files.image.mv('public/images/'+req.files.image.name, function(err) {
-	    	console.log('ok', '/public/images/'+req.files.image.name)
+	    	// console.log('ok', '/public/images/'+req.files.image.name)
 	    	//si ça plante dans la callback
 		    if (err) {
 		    //renvoi d'un message d'erreur
