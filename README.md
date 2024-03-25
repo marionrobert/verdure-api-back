@@ -75,6 +75,19 @@ Le projet est organisé en plusieurs dossiers :
 ### Stripe
 Les paiements en ligne sont gérés grâce à la méthode paymentIntents de l'api stripe, dans le fichier **orderRoutes.js** :
 ```
+//on lie la clé privé stripe au back end pour permettre le suivi du paiement
+const sk_test = process.env.STRIPE_API_KEY_TEST
+const stripe = require('stripe')(sk_test)
+const withAuth = require('../withAuth')
+const adminAuth = require('../adminAuth')
+
+module.exports = (app, db) => {
+    const orderModel = require('../models/OrderModel')(db);
+    const plantModel = require('../models/PlantModel')(db);
+    const userModel = require('../models/UserModel')(db);
+
+    [...]
+
     //route de gestion du paiement (va analyser le bon fonctionnement du paiement)
     app.post('/api/v1/order/payment', withAuth, async (req, res, next)=>{
       console.log("in checkpayment back, req -->", req.body)
@@ -89,8 +102,9 @@ Les paiements en ligne sont gérés grâce à la méthode paymentIntents de l'ap
         receipt_email: req.body.email, //on demande à stripe d'envoyer email de confirmation du payment à l'utilisateur
       })
       res.json({client_secret: paymentIntent["client_secret"]})
+    });
+};
 
-    })
 ```
 
 ### Enregistrement d'image
