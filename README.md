@@ -145,4 +145,4 @@ module.exports = (app,db)=>{
 <br/>
 
 ## Dossier lié 🔗
-La partie front-end de l'application est accessible [ici]([https://github.com/marionrobert/verdure-front-react)
+La partie front-end de l'application est accessible [ici](https://github.com/marionrobert/verdure-front-react)
