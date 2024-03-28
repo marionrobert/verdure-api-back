@@ -59,6 +59,14 @@ Voici la liste des packages et leur version utilisés dans ce projet :
    - `npm start`
    - `npm dev` : cette deuxième option utilise nodemon pour actualiser le serveur à chaque modification de votre code
 
+7. Pour prendre en main l'application, voici des identifiants de connexion :
+    - Compte administrateur :
+        - Adresse e-mail : à venir
+        - Mot de passe : à venir
+    - Compte utilisateur :
+        - Adresse e-mail : à venir
+        - Mot de passe : à venir
+
 <br/>
 
 ## Contenu des fichiers 📁🗃️
