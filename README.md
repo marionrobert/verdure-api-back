@@ -40,7 +40,10 @@ Voici la liste des packages et leur version utilisés dans ce projet :
 4. Créez un fichier **.env** à la racine du projet et ajoutez-y les variables d'environnement suivantes :
    - `SECRET` pour signer et vérifier les JSON Web Tokens (JWT)
    - `STRIPE_API_KEY_TEST` pour l'utilisation de l'api stripe en mode test. Pour obtenir cette clé, vous devez créer un compte stripe.
-5. Créez les fichiers **config.js** (pour le production) et **config-offline.js** (pour le développement) à la racine de votre projet pour y mettre les informations concernant votre DB.
+5. **Création et connection à la base de données** :
+   - vous devez avoir un logiciel de base de données (comme MySQL Workbench, phpMyAdmin, etc.).
+   - importez le fichier **(fichier à venir prochainement)** dans le logiciel de base de données et exécuter l'importation. Vérifier que la base de données a bien été créée.
+   - Créez les fichiers **config.js** (pour le production) et **config-offline.js** (pour le développement) à la racine de votre projet pour y mettre les informations concernant votre DB.
    ```
    module.exports = {
        db: {
@@ -52,7 +55,7 @@ Voici la liste des packages et leur version utilisés dans ce projet :
    };
    ```
 
-8. Pour démarrer le serveur, vous avez deux options :
+6. Pour démarrer le serveur, vous avez deux options :
    - `npm start`
    - `npm dev` : cette deuxième option utilise nodemon pour actualiser le serveur à chaque modification de votre code
 
