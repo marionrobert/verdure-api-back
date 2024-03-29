@@ -42,7 +42,7 @@ Voici la liste des packages et leur version utilisés dans ce projet :
    - `STRIPE_API_KEY_TEST` pour l'utilisation de l'api stripe en mode test. Pour obtenir cette clé, vous devez créer un compte stripe.
 5. **Création et connection à la base de données** :
    - vous devez avoir un logiciel de base de données (comme MySQL Workbench, phpMyAdmin, etc.).
-   - importez le fichier **(fichier à venir prochainement)** dans le logiciel de base de données et exécuter l'importation. Vérifier que la base de données a bien été créée.
+   - importez le fichier **marionrobert_verdure.sql** dans le logiciel de base de données et exécuter l'importation. Vérifier que la base de données a bien été créée.
    - Créez les fichiers **config.js** (pour le production) et **config-offline.js** (pour le développement) à la racine de votre projet pour y mettre les informations concernant votre DB.
    ```
    module.exports = {
@@ -61,11 +61,11 @@ Voici la liste des packages et leur version utilisés dans ce projet :
 
 7. Pour prendre en main l'application, voici des identifiants de connexion :
     - Compte administrateur :
-        - Adresse e-mail : à venir
-        - Mot de passe : à venir
+        - Adresse e-mail : admin-verdure@gmail.com
+        - Mot de passe : AqwPM741*
     - Compte utilisateur :
-        - Adresse e-mail : à venir
-        - Mot de passe : à venir
+        - Adresse e-mail : user0-test-verdure@gmail.com
+        - Mot de passe : Azerty123*
 
 <br/>
 
