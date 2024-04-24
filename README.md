@@ -262,21 +262,20 @@ module.exports = (app, db) => {
 
     [...]
 
-    //route de gestion du paiement (va analyser le bon fonctionnement du paiement)
-    app.post('/api/v1/order/payment', withAuth, async (req, res, next)=>{
-      console.log("in checkpayment back, req -->", req.body)
-      let order = await orderModel.getOneOrder(req.body.orderId)
-      //on lance le suivi du paiement de la commande
-      //on veut que stripe nous retourne une réponse d'acceptation de paiement ou non, mais tout ce qui est envoi numéro carte c'ets géré en front
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: order[0].totalAmount * 100, // stripe est en centimes donc on multiplie par 100
-        currency: "eur", //devise du paiement,
-        // payment_method: 'pm_card_visa',
-        metadata: {integration_check: "accept_a_paymentt"}, //on vérifie si le paiement est accepté ou non
-        receipt_email: req.body.email, //on demande à stripe d'envoyer email de confirmation du payment à l'utilisateur
-      })
-      res.json({client_secret: paymentIntent["client_secret"]})
-    });
+    // Payment handling route (checks payment status)
+	app.post('/api/v1/order/payment', withAuth, async (req, res, next)=>{
+	  console.log("in checkpayment back, req -->", req.body)
+	  let order = await orderModel.getOneOrder(req.body.orderId)
+	  // Start tracking payment
+	  // Expect Stripe to return a payment acceptance response or rejection, all card number sending is managed in front-end
+	  const paymentIntent = await stripe.paymentIntents.create({
+	    amount: order[0].totalAmount * 100, // Stripe is in cents so we multiply by 100
+	    currency: "eur", // Payment currency,
+	    metadata: {integration_check: "accept_a_paymentt"}, // Check if payment is accepted or not
+	    receipt_email: req.body.email, // Request Stripe to send payment confirmation email to the user
+	  })
+	  res.json({client_secret: paymentIntent["client_secret"]})
+	});
 };
 ```
 
@@ -291,26 +290,27 @@ module.exports = (app,db)=>{
     const plantModel = require('../models/PlantModel')(db)
      [...]
 
-    //route d'ajout d'une image dans l'api (enregistre une image et retourne au front le nom de l'image stockée)
-    app.post('/api/v1/plant/pict', adminAuth, (req, res, next) =>{
-        //si on a pas envoyé de req.files via le front ou que cet objet ne possède aucune propriété
-		if (!req.files || Object.keys(req.files).length === 0) {
-			//on envoi une réponse d'erreur
-	    	 res.json({status: 400, msg: "La photo n'a pas pu être récupérée"});
+    // Route for adding an image in the API (saves an image and returns the stored image name to the frontend)
+app.post('/api/v1/plant/pict', adminAuth, (req, res, next) =>{
+    // If no req.files are sent via the front-end or if this object has no properties
+	if (!req.files || Object.keys(req.files).length === 0) {
+		// Return an error response
+    	 res.json({status: 400, msg: "La photo n'a pas pu être récupérée"});
+    }
+    // The mv function will send the image to the desired folder.
+    req.files.image.mv('public/images/'+req.files.image.name, function(err) {
+    	// console.log('ok', '/public/images/'+req.files.image.name)
+    	// If there's an error in the callback
+	    if (err) {
+	    // Return an error message
+	      res.json({status: 500, msg: "La photo n'a pas pu être enregistrée"})
 	    }
-	    //la fonction mv va envoyer l'image dans le dossier que l'on souhaite.
-	    req.files.image.mv('public/images/'+req.files.image.name, function(err) {
-	    	// console.log('ok', '/public/images/'+req.files.image.name)
-	    	//si ça plante dans la callback
-		    if (err) {
-		    //renvoi d'un message d'erreur
-		      res.json({status: 500, msg: "La photo n'a pas pu être enregistrée"})
-		    }
-		 });
-	    //si c'est good on retourne un json avec le nom de la photo vers le front
-        res.json({status: 200, msg: "image bien enregistrée!", url: req.files.image.name})
-    })
-    [...]
+	 });
+    // If successful, return a JSON with the image name to the front-end
+    res.json({status: 200, msg: "image bien enregistrée!", url: req.files.image.name})
+})
+[...]
+
 }
 
 ```
