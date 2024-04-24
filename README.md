@@ -1,3 +1,5 @@
+(english below)
+
 # Bienvenue sur *Verdure* : Découvrez un large choix de plantes pour habiller votre intérieur 🌻🪴
 <img src="/public/images/screenshots/banner.png" alt="bannière de l'application web">
 
@@ -157,3 +159,164 @@ module.exports = (app,db)=>{
 
 ## Dossier lié 🔗
 La partie front-end de l'application est accessible [ici](https://github.com/marionrobert/verdure-front-react)
+
+
+---
+---
+
+# Welcome to *Verdure*: Explore a Wide Range of Plants to Decorate Your Interior 🌻🪴
+![application web banner](/public/images/screenshots/banner.png)
+
+Verdure is a web application for selling indoor plants online. This repository is dedicated to the **backend part** of the project.
+
+## Development Context 💻
+This is an educational project developed during the "FullStack Javascript Web Developer" training at the 3w Academy.
+
+## Installation and Configuration ⚙️🛠️
+
+### System Prerequisites:
+The application currently runs on:
+- Node.js (version 16.15.1)
+- Npm (version 8.11.0)
+
+Here is the list of packages and their versions used in this project:
+```
+"dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "jsonwebtoken": "^9.0.0",
+    "nodemon": "^2.0.22",
+    "promise-mysql": "^5.2.0",
+    "stripe": "^12.11.0"
+  }
+```
+<br/>
+
+### Installation Steps:
+1. Clone the Git repository: `git clone https://github.com/marionrobert/verdure-api-back.git`
+2. Make sure you have the correct versions of the technological stack installed.
+3. Run the command `npm install` to install dependencies.
+4. Create a **.env** file at the root of the project and add the following environment variables:
+   - `SECRET` to sign and verify JSON Web Tokens (JWT)
+   - `STRIPE_API_KEY_TEST` for using the Stripe API in test mode. To get this key, you need to create a Stripe account.
+5. **Database Setup and Connection**:
+   - You must have a database software (such as MySQL Workbench, phpMyAdmin, etc.).
+   - Import the **marionrobert_verdure.sql** file into the database software and execute the import. Verify that the database has been created.
+   - Create the **config.js** (for production) and **config-offline.js** (for development) files at the root of your project to store your DB information.
+ ```
+   module.exports = {
+       db: {
+            host: "YOUR HOST",
+            database: "YOUR DB",
+            user: "YOUR USER",
+            password: "YOUR PASSWORD"
+        }
+   };
+   ```
+
+6. To start the server, you have two options:
+- `npm start`
+- `npm dev`: this second option uses nodemon to refresh the server with each code modification.
+
+7. To explore the application, here are login credentials:
+ - Administrator Account:
+     - Email: admin-verdure@gmail.com
+     - Password: AqwPM741*
+ - User Account:
+     - Email: user0-test-verdure@gmail.com
+     - Password: Azerty123*
+
+<br/>
+
+## File Structure 📁🗃️
+
+The project is organized into several folders:
+- **models**: This folder contains all data models: *OderModel, PlantModel, UserModel*. These files define methods for interacting with the database and performing operations such as retrieving, creating, updating, and deleting entries.
+- **routes**: This folder contains configuration files for the REST API routes of the application, such as `authRoutes.js`, `userRoutes.js`, `orderRoutes.js`, and `plantRoutes.js`. Each file defines routes for different application features, calling appropriate methods from the models.
+ - For example, in the `plantRoutes.js` file, routes include retrieving all plants, retrieving a single plant by ID, registering a new plant, adding an image for a plant, updating and deleting an existing plant. For sensitive routes, it uses the adminAuth middleware to ensure that authenticated users have necessary permissions.
+ - Notable in `authRoutes.js`: this file handles the authentication route in the application *GET /api/v1/user/checkToken* allowing an authenticated user to verify their authentication token and retrieve associated user information from the database. This facilitates automatic reconnection from the frontend and maintains an active user session.
+
+- **public**: It contains static resources, main images, as the CSS, being minimal, has been directly integrated into views.
+- Middleware files **withAuth** and **adminAuth** are used for user authentication and to ensure they have necessary permissions to access certain routes.
+
+<br/>
+
+## Special Features
+
+### Stripe
+Online payments are managed using the paymentIntents method of the Stripe API, in the **orderRoutes.js** file:
+```
+// Link the Stripe private key to the backend to track payment
+const sk_test = process.env.STRIPE_API_KEY_TEST
+const stripe = require('stripe')(sk_test)
+const withAuth = require('../withAuth')
+const adminAuth = require('../adminAuth')
+
+module.exports = (app, db) => {
+    const orderModel = require('../models/OrderModel')(db);
+    const plantModel = require('../models/PlantModel')(db);
+    const userModel = require('../models/UserModel')(db);
+
+    [...]
+
+    //route de gestion du paiement (va analyser le bon fonctionnement du paiement)
+    app.post('/api/v1/order/payment', withAuth, async (req, res, next)=>{
+      console.log("in checkpayment back, req -->", req.body)
+      let order = await orderModel.getOneOrder(req.body.orderId)
+      //on lance le suivi du paiement de la commande
+      //on veut que stripe nous retourne une réponse d'acceptation de paiement ou non, mais tout ce qui est envoi numéro carte c'ets géré en front
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: order[0].totalAmount * 100, // stripe est en centimes donc on multiplie par 100
+        currency: "eur", //devise du paiement,
+        // payment_method: 'pm_card_visa',
+        metadata: {integration_check: "accept_a_paymentt"}, //on vérifie si le paiement est accepté ou non
+        receipt_email: req.body.email, //on demande à stripe d'envoyer email de confirmation du payment à l'utilisateur
+      })
+      res.json({client_secret: paymentIntent["client_secret"]})
+    });
+};
+```
+
+
+### Image Upload
+The code below implements an API route for adding an image to the server from the frontend. When a POST request is sent to this route with an image, it is stored in the public/images directory of the server. Image saving is done using the mv function, which moves the image to the specified folder. Upon successful saving, the route returns a JSON response indicating that the image was successfully saved, along with the stored image name.
+```
+const fs = require('fs') //va nous permettre de supprimer des images locales
+const adminAuth = require('../adminAuth')
+
+module.exports = (app,db)=>{
+    const plantModel = require('../models/PlantModel')(db)
+     [...]
+
+    //route d'ajout d'une image dans l'api (enregistre une image et retourne au front le nom de l'image stockée)
+    app.post('/api/v1/plant/pict', adminAuth, (req, res, next) =>{
+        //si on a pas envoyé de req.files via le front ou que cet objet ne possède aucune propriété
+		if (!req.files || Object.keys(req.files).length === 0) {
+			//on envoi une réponse d'erreur
+	    	 res.json({status: 400, msg: "La photo n'a pas pu être récupérée"});
+	    }
+	    //la fonction mv va envoyer l'image dans le dossier que l'on souhaite.
+	    req.files.image.mv('public/images/'+req.files.image.name, function(err) {
+	    	// console.log('ok', '/public/images/'+req.files.image.name)
+	    	//si ça plante dans la callback
+		    if (err) {
+		    //renvoi d'un message d'erreur
+		      res.json({status: 500, msg: "La photo n'a pas pu être enregistrée"})
+		    }
+		 });
+	    //si c'est good on retourne un json avec le nom de la photo vers le front
+        res.json({status: 200, msg: "image bien enregistrée!", url: req.files.image.name})
+    })
+    [...]
+}
+
+```
+
+<br/>
+
+## Related Repository 🔗
+The frontend part of the application can be found [here](https://github.com/marionrobert/verdure-front-react)
+
